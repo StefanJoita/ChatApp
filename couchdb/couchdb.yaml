@@ -1,0 +1,68 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: couchdb-nodep-svc 
+  labels:
+    app: couchdb
+spec:
+  type: NodePort
+  ports:
+  - port: 5984
+    nodePort: 30984
+    protocol: TCP
+  selector:
+    app: couchdb
+  externalIPs:
+  - 10.0.0.4
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: couchdb-service
+  namespace: default
+  labels:
+    app: couchdb
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 5984
+    protocol: TCP
+    targetPort: 5984
+  selector:
+    app: couchdb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: couchdb
+spec:
+  selector:
+    matchLabels:
+      app: couchdb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: couchdb
+    spec:
+      containers:
+      - image: couchdb:2.2.0
+        name: couchdb
+        env:
+        - name: COUCHDB_USER
+          value: tema2
+        - name: COUCHDB_PASSWORD
+          value: Academie123
+        ports:
+        - containerPort: 5984
+          name: couchdb
+        resources: {}
+        volumeMounts:
+        - name: couchdb-persistent-storage
+          mountPath: /opt/couchdb/data
+      volumes:
+      - name: couchdb-persistent-storage
+        persistentVolumeClaim:
+          claimName: couchdb-pv-claim

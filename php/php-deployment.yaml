@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: php
+  name: php
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: php
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: php
+    spec:
+      containers:
+      - image: localhost:32000/php-server3
+        name: php
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: php
+  name: php
+spec:
+  externalIPs:
+  - 10.0.0.4
+  ports:
+  - port: 88
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: php
+status:
+  loadBalancer: {}
+
+
+
+

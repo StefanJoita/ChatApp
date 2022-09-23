@@ -1,0 +1,9 @@
+secretGenerator:
+- name: mysql-pass
+  literals:
+  - password=stefan
+resources:
+  - mysql-deployment.yaml
+  - wp-deployment.yaml
+  - php/php-deployment.yaml
+  - couchdb/couchdb.yaml
